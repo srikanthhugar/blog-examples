@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:cxf="http://cxf.apache.org/core" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+http://cxf.apache.org/jaxrs
+http://cxf.apache.org/schemas/jaxrs.xsd
+http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd http://www.springframework.org/schema/util
+http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	<context:annotation-config />
+
+	<cxf:bus>
+		<cxf:features>
+			<cxf:logging />
+		</cxf:features>
+	</cxf:bus>
+
+	<context:property-placeholder location="classpath:linkedin.properties" />
+
+	<bean id="linkedinPropertiesHolder"
+		class="in.srikanthugar.oauth.rest.linkedin.LinkedinPropertiesHolder">
+		<property name="linkedinResourceURL" value="${linkedin.resource.url}" />
+		<property name="linkedinAPIKey" value="${linkedin.api.key}" />
+		<property name="linkedinSecreteKey" value="${linkendin.secrete.key}" />
+		<property name="linkedinCallbackURL" value="${linkedin.callback.url}" />
+	</bean>
+
+	<jaxrs:server id="services" address="">
+		<jaxrs:properties>
+			<entry key="org.apache.cxf.jaxrs.mediaTypeCheck.strict" value="true" />
+		</jaxrs:properties>
+		<jaxrs:serviceBeans>
+			<bean id="linkedinService" class="in.srikanthugar.oauth.rest.linkedin.LinkedinService">
+			</bean>
+		</jaxrs:serviceBeans>
+
+		<jaxrs:providers>
+			<bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
+		</jaxrs:providers>
+	</jaxrs:server>
+
+</beans>
